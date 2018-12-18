@@ -1,2 +1,2 @@
 # TPWeb
-Tugas projek pemrograman web
+Tugas projek pemrograman web dasar
