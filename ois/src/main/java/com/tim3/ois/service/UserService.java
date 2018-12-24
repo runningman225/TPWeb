@@ -20,7 +20,22 @@ public class UserService {
     public UserService(UserRepository userRepository){
         this.userRepository=userRepository;
     }
-    public List<User> findAll() {return userRepository.findAll();}
+    public List<User> findBy(String orderBy, String sortBy) {
+
+        if(orderBy.equals("role") & sortBy.equals("asc")){
+            System.out.println(userRepository.findAllByOrderByRoleAsc());
+            return userRepository.findAllByOrderByRoleAsc();
+        }
+        else if(orderBy.equals("role") & sortBy.equals("desc")){
+            return userRepository.findAllByOrderByRoleDesc();
+        }
+        else if(orderBy.equals("name") & sortBy.equals("asc")){
+            return userRepository.findAllByOrderByNameAsc();
+        }
+        else {
+            return userRepository.findAll();
+        }
+    }
     public User findUserById(int id) throws ResourceNotFoundException {
         User user = userRepository.findById(id);
         if(user==null){throw new ResourceNotFoundException("User","id",id);}
@@ -41,11 +56,20 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(User u) throws ResourceNotFoundException{
-        User user = userRepository.findById(u.getId());
+    public User updateUser(int id,User u) throws ResourceNotFoundException{
+        User user = userRepository.findById(id);
         if(user==null){
             throw new ResourceNotFoundException("User","id",u.getId());
         }
+        user.setNik(u.getNik());
+        user.setSuperior(u.getSuperior());
+        user.setPosition(u.getPosition());
+        user.setDivision(u.getDivision());
+        user.setEmail(u.getEmail());
+        user.setCnumber(u.getCnumber());
+        user.setAddress(u.getAddress());
+        user.setName(u.getName());
+        user.setRole(u.getRole());
         user.setPassword(u.getPassword());
         User updatedUser = userRepository.save(user);
         return updatedUser;
