@@ -12,7 +12,13 @@ function getAllUsers(){
         "            </div>\n" +
         "            <div class=\"col-md-2\"></div>\n" +
         "            <div class=\"col-md-6 col11\">\n" +
-        "            \t<button id='addNewUser' type='button' class=\"btn btn-success btn2 fa fa-plus\"> Add New User</button>\n" +
+        "            \t     <label for=\"sel1\">Order By:</label>\n" +
+        "            <select style='width: 50%' id='orderBy'>\n" +
+        "                <option value='role'>Role</option>\n" +
+        "                <option value='email'>Email</option>\n" +
+        "                <option value='name'>Name</option>\n" +
+        "                <option value='id'>Id</option>\n" +
+        "            </select>\n" +
         "            </div>\n" +
         "            <div class='table-responsive'>\n" +
         "            \t<table class='table table-sm table-hover table-bordered'>\n" +
