@@ -1,6 +1,6 @@
-function getAllUsers(){
+function getAllItems(){
     return " <div class=\"col-md-3 title2\">\n" +
-        "\t    \t\t<span class=\"title1\"><b class=\"bold1\">U</b>SER<b class=\"bold1\">L</b>IST</span>\n" +
+        "\t    \t\t<span class=\"title1\"><b class=\"bold1\">I</b>TEM<b class=\"bold1\">L</b>IST</span>\n" +
         "\t    \t</div>\n" +
         "            <div class=\"col-md-4 form-group\">\n" +
         "                <div class=\"input-group\">\n" +
@@ -12,32 +12,35 @@ function getAllUsers(){
         "            </div>\n" +
         "            <div class=\"col-md-2\"></div>\n" +
         "            <div class=\"col-md-3 col11\">\n" +
-        "            \t     <label for=\"sel1\">OrderBy:</label>\n" +
-        "            <select style='width: 50%' id='orderBy'>\n" +
-        "                <option value='role'>Role</option>\n" +
-        "                <option value='email'>Email</option>\n" +
+        "            <label for=\"orderBy\">OrderBy:</label>\n" +
+        "            <select style='width: 36%' id='orderBy'>\n" +
         "                <option value='name'>Name</option>\n" +
         "                <option value='id'>Id</option>\n" +
+        "                <option value='quantity'>Qty</option>\n" +
+        "                <option value='price'>Price</option>\n" +
         "            </select>\n" +
         "            </div>\n" +
+        "            <div  class=\"col-md-3 col11\"> "+
+        "           <label for=\"sortBy\">SortBy:</label>" +
+        "           <select style='width: 36%' id='sortBy'>\n" +
+        "                <option value='asc'>Asc</option>\n" +
+        "                <option value='desc'>Desc</option>\n" +
+        "            </select>" +
+        "            </div>"+
         "            <div class='table-responsive'>\n" +
         "            \t<table class='table table-sm table-hover table-bordered'>\n" +
         "            \t\t<thead>\n" +
         "            \t\t\t<tr>\n" +
         "            \t\t\t\t<th>ID</th>\n" +
-        "            \t\t\t\t<th>Email</th>\n" +
-        "            \t\t\t\t<th>NIK</th>\n" +
         "            \t\t\t\t<th>Name</th>\n" +
-        "            \t\t\t\t<th>Division</th>\n" +
-        "            \t\t\t\t<th>Position</th>\n" +
-        "            \t\t\t\t<th>ContactNum</th>\n" +
-        "            \t\t\t\t<th>Address</th>\n" +
-        "            \t\t\t\t<th>Superior</th>\n" +
+        "            \t\t\t\t<th>Quantity</th>\n" +
+        "            \t\t\t\t<th>Price</th>\n" +
+        "            \t\t\t\t<th>Detail</th>\n" +
         "            \t\t\t\t<th>Picture</th>\n" +
         "            \t\t\t\t<th>Action</th>\n" +
         "            \t\t\t</tr>\n" +
         "            \t\t</thead>\n" +
-        "            \t\t<tbody id='userList'>\n" +
+        "            \t\t<tbody id='itemList'>\n" +
         "            \t\t</tbody>\n" +
         "            \t</table>\n" +
         "            </div>\n" +

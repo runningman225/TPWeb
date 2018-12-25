@@ -11,11 +11,10 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByEmail(String email);
     User findById(int id);
-    User findByEmailAndPassword(String email,String password);
-    List<User> findAllByRole(int role);
-    List<User> findAllByOrderByIdAsc();
-    List<User> findAllByOrderByEmailAsc();
-    List<User> findAllByOrderByNameAsc();
-    List<User> findAllByOrderByRoleAscEmailAsc() ;
-
+    User findByEmailAndPasswordAndEnabled(String email,String password, boolean bool);
+    List<User> findAllByRoleAndEnabledOrderByEmailAsc(int role, boolean bool);
+    List<User> findAllByEnabledOrderByEmailAsc(boolean bool);
+    List<User> findAllByEnabledOrderByNameAsc(boolean bool);
+    List<User> findAllByEnabledOrderByRoleAscEmailAsc(boolean bool) ;
+    List<User> findAllByEnabledOrderByIdAsc(boolean bool);
 }
