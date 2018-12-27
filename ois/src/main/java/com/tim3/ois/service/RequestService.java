@@ -2,6 +2,7 @@ package com.tim3.ois.service;
 
 import com.tim3.ois.exception.ResourceNotFoundException;
 import com.tim3.ois.model.Request;
+import com.tim3.ois.service.RequestDetailService;
 //import com.tim3.ois.model.RequestDetail;
 //import com.tim3.ois.repository.RequestDetailRepository;
 import com.tim3.ois.model.User;
@@ -30,6 +31,9 @@ public class RequestService {
     public RequestService(RequestRepository requestRepository){
         this.requestRepository = requestRepository;
     }
+    @Autowired
+    public RequestDetailService requestDetailService;
+
     public List<Request> findAll(){
         return requestRepository.findAll();
     }
@@ -47,8 +51,9 @@ public class RequestService {
 
     public Request saveRequest(Request request){
         request.setCreatedAt(new Date().getTime());
-        request.setStatus("pending/waiting to be approved");
+        request.setStatus("Pending/waiting to be approved");
         requestRepository.save(request);
+        requestDetailService.updateRequestDetail(request,1);
         System.out.println(request);
         return request;
     }
@@ -57,30 +62,22 @@ public class RequestService {
 //    }
 
     //UPDATE REQUEST STATUS REJECTED 0
-    public Request updateRequest(int id,String status,String rejectNote) {
+    public Request updateRequest(int id,String status,String feedback) {
         Request request= requestRepository.findById(id);
 //        request.setApprovedBy(email);
         request.setStatus(status);
-        request.setRejectNote(rejectNote);
+        request.setFeedback(feedback);
         request.setRejectedAt(new Date().getTime());
         Request updatedRequest = requestRepository.save(request);
         return updatedRequest;
     }
 
     //UPDATE REQUEST STATUS HAD BEEN APPROVED 1
-    public Request updateRequest(int id, String status) {
+    public Request updateRequest(int id,String feedback) {
         Request request= requestRepository.findById(id);
-       // request.setApprovedBy(email);
-        request.setStatus(status);
+        request.setFeedback(feedback);
         request.setApprovedAt(new Date().getTime());
-        Request updatedRequest = requestRepository.save(request);
-        return updatedRequest;
-    }
-
-    //UPDATE REQUEST STATUS ROLLBACK 2
-    public Request updateRequest(int id, String status,int EXTRA) {
-        Request request= requestRepository.findById(id);
-        request.setStatus(status);
+        request.setStatus("Approved/Item(s) waiting to be picked");
         Request updatedRequest = requestRepository.save(request);
         return updatedRequest;
     }
@@ -94,8 +91,7 @@ public class RequestService {
         Request updatedRequest = requestRepository.save(request);
         return updatedRequest;
     }
-
-    //UPDATE REQUEST STATUS ITEM RETURNED 4
+    //UPDATE REQUEST STATUS ITEM RETURNED 5
     public Request updateRequest(int id,Request req,String EXTRA) {
         Request request= requestRepository.findById(id);
         request.setStatus("Item(s) had been returned by requester");

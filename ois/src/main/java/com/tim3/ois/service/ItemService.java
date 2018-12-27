@@ -54,10 +54,10 @@ public class ItemService {
         else if(orderBy.equals("id") && sortBy.equals("asc")){
             return itemRepository.findAllByEnabledOrderByIdAsc(true);
         }
-        else if(orderBy.equals("quantity") && sortBy.equals("asc")){
+        else if(orderBy.equals("qty") && sortBy.equals("asc")){
             return itemRepository.findAllByEnabledOrderByQuantityAsc(true);
         }
-        else if(orderBy.equals("quantity") && sortBy.equals("desc")){
+        else if(orderBy.equals("qty") && sortBy.equals("desc")){
             return itemRepository.findAllByEnabledOrderByQuantityDesc(true);
         }
         else {
@@ -73,7 +73,16 @@ public class ItemService {
         item.setEnabled(true);
         return itemRepository.save(item);
     }
-    public void deleteItem(Item item){
-        itemRepository.delete(item);
+//    public void deleteItem(Item item){
+//        itemRepository.delete(item);
+//    }
+    public Boolean deleteItem(int id){
+        Item item = itemRepository.findById(id);
+        if(item==null){
+            return false;
+        }
+        item.setEnabled(false);
+        itemRepository.save(item);
+        return true;
     }
 }

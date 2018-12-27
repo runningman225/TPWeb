@@ -14,7 +14,10 @@ function getAvailableItems(){
         "            <div class=\"col-md-3 col11\">\n" +
         "            <label for=\"orderBy\">OrderBy:</label>\n" +
         "            <select style='width: 36%' id='orderBy'>\n" +
+        "                <option value='id'>Qty</option>\n" +
+        "                <option value='qty'>Qty</option>\n" +
         "                <option value='name'>Name</option>\n" +
+        "                <option value='price'>Price</option>\n" +
         "            </select>\n" +
         "            </div>\n" +
         "            <div  class=\"col-md-3 col11\"> "+
@@ -25,7 +28,7 @@ function getAvailableItems(){
         "            </select>" +
         "            </div>"+
         "            <div class='table-responsive'>\n" +
-        "            \t<table class='tabel table-sm table-hover table-bordered'>\n" +
+        "            \t<table class='tabel table-sm table-bordered'>\n" +
         "            \t\t<thead>\n" +
         "            \t\t\t<tr>\n" +
         "            \t\t\t\t<th>Picture</th>\n" +
@@ -46,8 +49,8 @@ function getAvailableItems(){
         "\t\t    <div id='cartItemsContainer'>\n" +
         "\t\t      <h2>Items in your cart</h2>\n" +
         "\t\t      <i class='fa fa-times-circle-o fa-2x openCloseCart' aria-hidden='true'></i>\n" +
-        "\t\t      <div class='table-responsive'>" +
-        "              <table class='table table-hover'>" +
+        "\t\t      <div class='table-responsive' style='height:400px;overflow: auto;'>" +
+        "              <table class='table table-sm table-hover'>" +
         " <thead>"+
         "            \t\t\t\t<th>Id</th>\n" +
         "            \t\t\t\t<th>Name</th>\n" +
@@ -61,7 +64,7 @@ function getAvailableItems(){
         "          </div>\n" +
         "\t\t      <div id='cartTotal'></div>" +
         "<div><input type='text' style='width: 100%;padding: 8px;' id='reqMessage' placeholder='Enter your request message/note here'></div>"+
-        "           <button style='float:right;' id='submit' type='submit' class='btn btn-info'><b style='color:whitesmoke'>SUBMIT</b></button>\n" +
+        "           <button style='float:right;' id='submit' type='submit' class='btn btn-default'><span style=\"color:white\">SUBMIT</span></button>\n" +
         "\t\t       </div>\n" +
         "\t\t       </div></th>\n" +
         "            \t\t\t</tr>\n" +
