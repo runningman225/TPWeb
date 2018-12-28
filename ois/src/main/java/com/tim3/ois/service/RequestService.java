@@ -9,6 +9,7 @@ import com.tim3.ois.model.User;
 //import com.tim3.ois.model.UserEmail;
 import com.tim3.ois.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +49,21 @@ public class RequestService {
         return request;
     }
 
+    public List<Request> findAllBy(int id, String sortBy,String orderBy) {
+        if(id != 0) {
+            if (orderBy.toLowerCase().equals("asc")) return requestRepository.findAllBySuperior(id,true ,Sort.by(sortBy,"id").ascending());//parameter kedua adalah opsional, ketika
+            else return requestRepository.findAllBySuperior(id, true ,Sort.by(sortBy,"id").descending());
+        }
+        else {
+            if (orderBy.toLowerCase().equals("asc")) return requestRepository.findAllBy(true,Sort.by(sortBy,"id").ascending());
+            else return requestRepository.findAllBy(true,Sort.by(sortBy,"id").descending());
+            }
+        }
 
-    public Request saveRequest(Request request){
+    public Request saveRequest(Request request){ //STATUS CODE = 0 ITEM IS REQUESTED WAITING FOR APPROVAL
         request.setCreatedAt(new Date().getTime());
         request.setStatus("Pending/waiting to be approved");
+        request.setStatusCode(0);
         requestRepository.save(request);
         requestDetailService.updateRequestDetail(request,1);
         System.out.println(request);
@@ -61,49 +73,59 @@ public class RequestService {
 //        return requestDetailRepository.save(reqDetail);
 //    }
 
-    //UPDATE REQUEST STATUS REJECTED 0
-    public Request updateRequest(int id,String status,String feedback) {
-        Request request= requestRepository.findById(id);
-//        request.setApprovedBy(email);
-        request.setStatus(status);
-        request.setFeedback(feedback);
-        request.setRejectedAt(new Date().getTime());
-        Request updatedRequest = requestRepository.save(request);
-        return updatedRequest;
-    }
-
     //UPDATE REQUEST STATUS HAD BEEN APPROVED 1
     public Request updateRequest(int id,String feedback) {
         Request request= requestRepository.findById(id);
         request.setFeedback(feedback);
+        request.setStatusCode(1);
         request.setApprovedAt(new Date().getTime());
         request.setStatus("Approved/Item(s) waiting to be picked");
         Request updatedRequest = requestRepository.save(request);
         return updatedRequest;
     }
 
-    //UPDATE HANDEDBY ADMIN ITEM TAKEN 3
+    //UPDATE HANDEDBY ADMIN ITEM TAKEN 2
     public Request updateRequest(int id, Request req) {
         Request request= requestRepository.findById(id);
         request.setHandedBy(req.getHandedBy());
         request.setHandedAt(new Date().getTime());
         request.setStatus("Item(s) had been taken by requester");
+        request.setStatusCode(2);
         Request updatedRequest = requestRepository.save(request);
         return updatedRequest;
     }
-    //UPDATE REQUEST STATUS ITEM RETURNED 5
+    //UPDATE REQUEST STATUS ITEM RETURNED 3
     public Request updateRequest(int id,Request req,String EXTRA) {
         Request request= requestRepository.findById(id);
         request.setStatus("Item(s) had been returned by requester");
         request.setReturnedAt(new Date().getTime());
+        request.setStatusCode(3);
         request.setReceivedBy(req.getReceivedBy());
         Request updatedRequest = requestRepository.save(request);
 
         return updatedRequest;
     }
 
-    public void deleteRequest(Request request){
+    //UPDATE REQUEST STATUS REJECTED 4
+    public Request updateRequest(int id,String status,String feedback) {
+        Request request= requestRepository.findById(id);
+//        request.setApprovedBy(email);
+        request.setStatus(status);
+        request.setFeedback(feedback);
+        request.setRejectedAt(new Date().getTime());
+        request.setStatusCode(4);
+        Request updatedRequest = requestRepository.save(request);
+        return updatedRequest;
+    }
+
+    public boolean deleteRequest(int reqId){ // CANCEL REQUEST
+        Request request = requestRepository.findById(reqId);
+        if(request==null){
+            return false;
+        }
+        requestDetailService.updateRequestDetail(request,4);
         requestRepository.delete(request);
+        return true;
     }
 
 //    public void deleteRequestDetail(RequestDetail reqDetail){
