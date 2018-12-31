@@ -1,23 +1,55 @@
+
 var user = getCookie("user");
 user = user.split(',');
-// document.getElementById("profile").innerText = user[2];
-$('#profile').text(user[2]);
-console.log(user);
+
 var myId = user[0];
 var myEmail = user[1];
 var myRole = user[3];
-var mySup = user[4];
-var isi= $("#isi"); //sebagai tempat pergantian konten halaman
 checkCookie("user");
+var sup = getCookie("superior");
+var mySup;
+if(sup) mySup=JSON.parse(sup);
 
-$('#logout').click(function(e){
-    e.preventDefault();
-    deleteCookie("user");
-    window.location = "login";
-});
+console.log(user);
+console.log(mySup);
+var isi= $("#isi"); //sebagai tempat pergantian konten halaman
 function refresh(ref){
     isi.html(ref());
 }
+
+var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+
+$('#profile').text(user[2]);
+
+
+$('.logout').click(function(e){
+    e.preventDefault();
+    deleteCookie("user");
+    deleteCookie("superior");
+    window.location = "login";
+});
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+//
+// async function demo() {
+//     agetCurrentStock();
+//     console.log('waiting...');
+//     await sleep(100);
+//     agetTotalStock();
+//     console.log('0.1 seconds later');
+// }
+
+agetRecentUpdates(0);
+agetItemCount();
+agetRequestCount()
+agetMyRequestCount();
+// agetCurrentStock();agetTotalStock();
+
+
+
 //===================================== T O P    B U T T O N =====================================
 
 var btn = $('#button');
@@ -54,8 +86,6 @@ function minMaxCheck(obj) { // user tetap bisa melakukan input ',' tpi ketika ms
 
 //===================================== U S E R =====================================
 
-
-
 function superiorList(){
     $('input:radio[name="optradio"]').click(function() {
         $("#superiorList").prop("disabled",false);
@@ -66,7 +96,7 @@ function superiorList(){
     });
 }
 
-$('#addUser').click(function(e){
+$('.addUser').click(function(e){
     e.preventDefault();
     refresh(addUser);
     agetAllSuperiors();
@@ -93,10 +123,10 @@ function editUser(userId){ // edit user by admin
     });
 }
 
-$("#editProfile").click(function () { //edit user by user
+$(".editProfile").click(function () { //edit user by user
     refresh(addUser);
     $("#title").html('<b class="bold1">E</b>DIT<b class="bold1">&nbsp;U</b>SER');
-    if(mySup) $("#mySup").html(`<b class="bold1">M</b>YSUPERIOR:<b class="bold1">&nbsp;${mySup}</b>`);
+    if(mySup) $("#mySup").html(`<b class="bold1">M</b>YSUPERIOR:<b class="bold1">&nbsp;${mySup.email}</b>`);
     $(".rm").remove();
     $(".dis").prop("disabled",true);
 
@@ -107,21 +137,26 @@ $("#editProfile").click(function () { //edit user by user
 function deleteUser(userId,userName){
     var r = confirm(`You are going to delete user :\nId      : ${userId}\nemail : ${userName}\n\nAre you sure? `);
     if(r==true){
-        adeleteUser(userId);//user tidak benar-benar di delete, melainkan hanya menganti value dari field enabled menjadi false.
+        checkUserRequest(userId);
+        // adeleteUser(userId);//user tidak benar-benar di delete, melainkan hanya menganti value dari field enabled menjadi false.
         //ketika yang didelete adalah user dengan role superior(1), dan memiliki hubungan foreignkey ke user lain, maka tidak akan terjadi error dan id user ini tetap menjadi foreignkey di user lain, sehingga perlu dilakukan update manual dari user lain utk mengganti superior_id nya.
-        $(`#${userId}`).parent().remove()
     }
 }
 
 
-
-$('#getAllUsers').click(function(e){
+$('.getAllUsers').click(function(e){
     e.preventDefault();
     refresh(getAllUsers);
     if(myRole==0) agetAllUsers();
-    else if(myRole==1) agetAllUsersBySuperior();
+    else if(myRole==1) {
+        agetAllUsersBySuperior();
+    }
+    else if(myRole==2) {
+        getMySuperior();
+    }
     $("#orderBy, #sortBy").change(function () {
-        agetAllUsers();
+        if(myRole==0 ) agetAllUsers();
+        else if(myRole==1) agetAllUsersBySuperior();
     });
 
     $("#myInput").on("keyup", function() {  //fungsi search ini didapat dari w3schools
@@ -134,10 +169,11 @@ $('#getAllUsers').click(function(e){
 
 //===================================== I T E M S =====================================
 
-$('#getAllItems').click(function (e) {
+$('.getAllItems').click(function (e) {
     e.preventDefault();
-    isi.html(getAllItems());
+    refresh(getAllItems);
     agetAllItems();
+    if(myRole > 0) $("th:last-child").remove();
     $("#orderBy, #sortBy").change(function () {
         agetAllItems();
     });
@@ -150,7 +186,7 @@ $('#getAllItems').click(function (e) {
     });
 });
 
-$('#addItem').click(function (e) {
+$('.addItem').click(function (e) {
     e.preventDefault();
     refresh(addItem);
     $('#saveItem').click(function (){
@@ -170,9 +206,8 @@ function editItem(itemId){ //still working on
 function deleteItem(itemId,itemName){
     var r = confirm(`You are going to delete user :\nId      : ${itemId}\nemail : ${itemName}\n\nAre you sure? `);
     if(r==true){
-        adeleteItem(itemId);//user tidak benar-benar di delete, melainkan hanya menganti value dari field enabled menjadi false.
+        checkItemRequest(itemId);//user tidak benar-benar di delete, melainkan hanya menganti value dari field enabled menjadi false.
         //ketika yang didelete adalah user dengan role superior(1), dan memiliki hubungan foreignkey ke user lain, maka tidak akan terjadi error dan id user ini tetap menjadi foreignkey di user lain, sehingga perlu dilakukan update manual dari user lain utk mengganti superior_id nya.
-        $(`#${itemId}`).parent().remove()
     }
 }
 
@@ -187,8 +222,16 @@ function add(btnId){
     $('#cartTotal').text("Total Items: " + itemCount);
     $(`.${btnId}`).prop('disabled',true);
 }
-
-$('#getAvailableItems').click(function (e) {
+function emptyCart(){
+    itemCount = 0;
+    $('#itemCount').css('display', 'none');
+    $('#cartItems').text('');
+    $('#reqMessage').text('');
+    $('.quantity').val('');
+    $('.ad').prop('disabled', false);
+    $('#cartTotal').text("Total Items: " + itemCount);
+}
+$('.getAvailableItems').click(function (e) {
     e.preventDefault();
     refresh(getAvailableItems);
     $('#title').html('<b class=\"bold1\">A</b>VAILABLE<b class=\"bold1\">&nbsp;I</b>TEMS');
@@ -217,13 +260,7 @@ $('#getAvailableItems').click(function (e) {
     $('#emptyCart').click(function() {
         var r = confirm("Are you sure to empty your cart?");
         if (r==true) {
-            itemCount = 0;
-            $('#itemCount').css('display', 'none');
-            $('#cartItems').text('');
-            $('#reqMessage').text('');
-            $('.quantity').val('');
-            $('.ad').prop('disabled', false);
-            $('#cartTotal').text("Total Items: " + itemCount);
+            emptyCart();
         }
     });
 
@@ -240,14 +277,14 @@ $('#getAvailableItems').click(function (e) {
         $(`.${btnId}`).prop('disabled',false);
     });
 
-    $('#submit').click(function () {
+    $('#submit').unbind().click(function () {
         submitRequest();
     });
 
 }); //=============================== A V A I L A B L E    I T E M S     E N D S     H E R E ===============================
 
 //=============================== R E Q U E S T S    S T A R T S    H E R E ===============================
-$('#getAllRequests').click(function (e) {
+$('.getAllRequests').click(function (e) {
     e.preventDefault();
     refresh(getAllRequests);
     if(myRole==0)
@@ -278,7 +315,7 @@ $('#getAllRequests').click(function (e) {
     });
 });
 
-$('#getMyRequests').click(function (e) {
+$('.getMyRequests').click(function (e) {
     e.preventDefault();
     refresh(getAllRequests);
     $('#title').html('<b class=\"bold1\">M</b>Y<b class=\"bold1\">&nbsp;R</b>SEQUEST');
@@ -294,7 +331,6 @@ $('#getMyRequests').click(function (e) {
         });
     });
 });
-
 
 
 

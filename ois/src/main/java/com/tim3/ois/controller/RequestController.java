@@ -4,6 +4,7 @@ import com.tim3.ois.model.Request;
 import com.tim3.ois.service.RequestDetailService;
 import com.tim3.ois.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +25,21 @@ public class RequestController {
 //        return requestService.findAll();
 //    }
 
-//    @GetMapping("/requests/{id}")
-//    public Request getRequest(@PathVariable(value = "id") int reqId){
-//        return requestService.findRequestById(reqId);
-//    }
+    @GetMapping("/requests/{id}")
+    public Request getRequest(@PathVariable(value = "id") int reqId){
+        return requestService.findRequestById(reqId);
+    }
+
+    @GetMapping("/requests/pageable") // api for get recent updates
+    public Page<Request> getRequestPage(
+            @RequestParam(value = "eId",required = false,defaultValue = "-1") Integer eId,
+            @RequestParam(value = "sId",required = false,defaultValue = "-1") Integer sId,
+            @RequestParam(value = "page",required = false,defaultValue = "0") Integer page,
+            @RequestParam(value = "size",required = false,defaultValue = "7") Integer size) {
+        return requestService.findAll(eId,sId,page,size);
+    }
+
+
     @GetMapping("/requests")
     public List<Request> getAllRequest(
             @RequestParam(value = "eId",required = false,defaultValue = "-1") Integer eId,
@@ -35,6 +47,16 @@ public class RequestController {
             @RequestParam(value = "sortBy",required = false,defaultValue = "createdAt")String sortBy,
             @RequestParam(value = "orderBy",required = false,defaultValue = "asc")String orderBy){
         return requestService.findAllBy(eId,sId,sortBy,orderBy);
+    }
+
+    @GetMapping("/requests/count")
+    public Object getRequestCount(){
+        return requestService.getRequestCount();
+    }
+    @GetMapping("/requests/count/{id}")
+    public Object getMyRequestCount(
+            @PathVariable("id") Integer id){
+        return requestService.getMyRequestCount(id);
     }
 
     @PostMapping(value = "/requests", produces = MediaType.APPLICATION_JSON_VALUE)

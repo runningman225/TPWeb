@@ -13,25 +13,40 @@ function agetAllItems(){
                 var len = data.length;
                 var txt = ``;
                 if (len > 0) {
-                    for (var i = 0; i < len; i++) {
-                        if(data[i]) {
-                            txt += `<tr >\n 
-                                          \t\t\t\t<td id=${data[i].id}>${data[i].id}</td>\n 
-                                            \t\t\t\t<td>${data[i].name}</td>\n 
-                                            \t\t\t\t<td>${data[i].quantity}</td>\n 
-                                            \\t\\t\t<td>${data[i].price}</td>\n
-                                            \\\\t\\\<td>${data[i].detail}</td>\\n
-                                            \t\t\t\t<td>${data[i].picture}</td>\n 
-                                            \t\t\t\t<td align="center"  class="action1">\n 
-                                            \t\t\t\t<button   onclick="editItem(${data[i].id})" class="btn btn-warning">Edit&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                                            \t\t\t\t\<button onclick="deleteItem(${data[i].id},'${data[i].name}')" class="btn btn-danger">Delete</button></>\n 
-                                            \t\t\t\t</td>\n
-                                            \t\t\t</tr>`;
-                        } // ONCLICK onclick="deleteItem(${data[i].id},'${data[i].name}') jalan karena di javasript '2' di auto convert menjadi integer jika dibutuhkan.
+                    if(myRole==0) {
+                        for (var i = 0; i < len; i++) {
+                            if (data[i]) {
+                                txt += `<tr >\n 
+                                          <td>${data[i].picture}</td>                                      
+                                          <td id=${data[i].id}>${data[i].id}</td>
+                                          <td>${data[i].name}</td>
+                                          <td>${data[i].quantity}</td>
+                                          <td>${data[i].price}</td>
+                                          <td>${data[i].detail}</td>
+                                          <td align="center"  class="action1">
+                                             <button   onclick="editItem(${data[i].id})" class="btn btn-warning">Edit&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                             <button onclick="deleteItem(${data[i].id},'${data[i].name}')" class="btn btn-danger">Delete</button>
+                                          </td>
+                                   </tr>`;
+                            } //${variabel} atau template literals mengauto convert menjadi string ONCLICK onclick="deleteItem(${data[i].id},'${data[i].name}') jalan karena di javasript '2' di auto convert menjadi integer jika dibutuhkan.
+                        }
                     }
-                    if(txt){
-                        $("#itemList").html(txt);
+                    else{
+                        for (var i = 0; i < len; i++) {
+                            if (data[i]) {
+                                txt += `<tr>
+                                          <td>${data[i].picture}</td>
+                                          <td id=${data[i].id}>${data[i].id}</td>
+                                          <td>${data[i].name}</td>
+                                          <td>${data[i].quantity}</td>
+                                          <td>${data[i].price}</td>
+                                          <td>${data[i].detail}</td>
+                                        </tr>`;
+                            } //${variabel} atau template literals mengauto convert menjadi string ONCLICK onclick="deleteItem(${data[i].id},'${data[i].name}') jalan karena di javasript '2' di auto convert menjadi integer jika dibutuhkan.
+                        }
                     }
+                    if(txt) $("#itemList").html(txt);
+
                     // alert("Success :"+data);
                     console.log(data);
                 }
@@ -174,7 +189,34 @@ function agetItemById(id){
     });
 }
 
+function checkItemRequest(itemId){
+    $.ajax({
+        type: 'GET',
+        url: `http://localhost:8080/api/items/onActiveRequest/`+itemId,
+        headers: {
+            "Content-Type": "application/json", "Accept": "application/json"
+        },
+        dataType:"json",
+        success: function (data) {      // FROM TRINCOT STACKOVERFLOW
+            console.log("yes. data: " + data);
+            if (data.length!=0) {
+                var msg="";
+                for(var i =0; i< data.length;i++){
+                    var req=data[i];
+                    msg+=`${req[0]},Qty: ${req[1]}\n`       //req[0] adalah index dari requestId , req[1] adalah index dari quantity
+                }
+                alert(`Failed to delete item (id: ${itemId})\nThe Item(s) still being requested/taken in Request Id:\n${msg}`);
+            }
+            else{
+                adeleteItem(itemId);
+            }
 
+        },
+        error: function (error) {
+            console.log('errorCode: ' + error.status + ' . Message: ' + error.responseText);
+        }
+    });
+}
 function adeleteItem(id){
     $.ajax({
         type: 'PUT',
@@ -186,6 +228,7 @@ function adeleteItem(id){
         success: function (data) {
             if(data==true){
                 console.log("Item DELETED : sucess");
+                $(`#${id}`).parent().remove()
                 alert("Successed to delete item");
             }
         },
@@ -196,3 +239,21 @@ function adeleteItem(id){
     });
 }
 
+function agetItemCount(){
+        $.ajax({
+            type: 'GET',
+            url: `http://localhost:8080/api/items/count`,
+            headers: {
+                "Content-Type": "application/json", "Accept": "application/json"
+            },
+            dataType:"json",
+            success: function (data) {
+                $("#totalQty").text(data.total);
+                $("#onRequest").text(data.onRequest);
+                $("#available").text(data.available);
+            },
+            error: function (error) {
+                console.log('errorCode: ' + error.status + ' . Message: ' + error.responseText);
+            }
+        });
+}
