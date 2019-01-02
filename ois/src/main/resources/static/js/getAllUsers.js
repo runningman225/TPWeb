@@ -31,7 +31,6 @@ function getAllUsers(){
         "            <table class='table even table-sm table-hover table-bordered'>" +
         "            <thead>" +
         "            <tr>" +
-        "            <th>Picture</th>" +
         "            <th>ID</th>" +
         "            <th>Email</th>" +
         "            <th>NIK</th>" +

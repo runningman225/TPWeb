@@ -18,13 +18,13 @@ function agetAllItems(){
                             console.log(data[i].imagePath);
                             if (data[i]) {
                                 txt += `<tr class="text-middle">\n 
-                                          <td class="text-center"><img width="50px" height="50px" src="img/${data[i].imagePath}" alt="Image">
+                                          <td class="text-center"><img width="60px" height="60px"  src="/img/${data[i].imagePath}" alt="Image">
 </td>                                      
-                                          <td id=${data[i].id}>${data[i].id}</td>
-                                          <td>${data[i].name}</td>
-                                          <td>${data[i].quantity}</td>
-                                          <td>${data[i].price}</td>
-                                          <td>${data[i].detail}</td>
+                                          <td id=${data[i].id} class="text-middle">${data[i].id} </td>
+                                          <td class="text-middle">${data[i].name}</td>
+                                          <td class="text-middle">${data[i].quantity}</td>
+                                          <td class="text-middle">${data[i].price}</td>
+                                          <td class="text-middle">${data[i].detail}</td>
                                           <td  class="action1 text-middle text-center">
                                              <button onclick="editItem(${data[i].id})" class="btn btn-warning">Edit&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                              <button onclick="deleteItem(${data[i].id},'${data[i].name}')" class="btn btn-danger">Delete</button>
@@ -36,13 +36,13 @@ function agetAllItems(){
                     else{
                         for (var i = 0; i < len; i++) {
                             if (data[i]) {
-                                txt += `<tr class="text-middle">\n 
-                                          <td class="text-center"><img width="50px" height="50px" src="img/${data[i].imagePath}" alt="Image"></td>
-                                          <td id=${data[i].id}>${data[i].id}</td>
-                                          <td>${data[i].name}</td>
-                                          <td>${data[i].quantity}</td>
-                                          <td>${data[i].price}</td>
-                                          <td>${data[i].detail}</td>
+                                txt += `<tr>\n 
+                                          <td class="text-center text-middle"><img width="60px" height="60px" src="/img/${data[i].imagePath}" alt="Image"></td>
+                                          <td  id=${data[i].id}>${data[i].id} class="text-middle"</td>
+                                          <td class="text-middle">${data[i].name}</td>
+                                          <td class="text-middle">${data[i].quantity}</td>
+                                          <td class="text-middle">${data[i].price}</td>
+                                          <td class="text-middle">${data[i].detail}</td>
                                         </tr>`;
                             } //${variabel} atau template literals mengauto convert menjadi string ONCLICK onclick="deleteItem(${data[i].id},'${data[i].name}') jalan karena di javasript '2' di auto convert menjadi integer jika dibutuhkan.
                         }
@@ -81,12 +81,12 @@ function agetAvailableItems(){
                             maxL= `${data[i].quantity}`;
                             maxL = maxL.length;
                             txt += `<tr id="${data[i].id}" >\n                                            
-                                        <td class="text-center img"><img width="50px" height="50px" src="img/${data[i].imagePath}" alt="Image">            
-                                        <td class="id">${data[i].id}</td>
-                                        <td>${data[i].name}</td>\n 
-                                        <td>${data[i].detail}. Stock left: ${data[i].quantity}</td>\n
-                                        <td class="qty"><input class="quantity" style="width: 100%;" type="number" maxlength="${maxL}" min="1" max="${data[i].quantity}" oninput="minMaxCheck(this)" placeholder="Max:${data[i].quantity}"></td>
-                                        <td align="center" class="rem action1">
+                                        <td class="text-center text-middle img"><img width="60px" height="60px" src="/img/${data[i].imagePath}" alt="Image">            
+                                        <td class="id text-middle">${data[i].id}</td>
+                                        <td class="text-middle">${data[i].name}</td>\n 
+                                        <td class="text-middle">${data[i].detail}. Stock left: ${data[i].quantity}</td>\n
+                                        <td class="qty text-middle"><input class="quantity" style="width: 100%;" type="number" maxlength="${maxL}" min="1" max="${data[i].quantity}" oninput="minMaxCheck(this)" placeholder="Max:${data[i].quantity}"></td>
+                                        <td class="text-middle" class="rem action1">
                                         <button onclick="add(${data[i].id})" class="ad btn btn-success ${data[i].id}"><span style="font-family:verdana;color:whitesmoke">&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                                         </td>\n
                                     </tr>`;
@@ -110,13 +110,29 @@ function agetAvailableItems(){
 
 function aaddItem(type){
 
+    // var formData = new FormData()
+    // formData.append('data', new Blob([JSON.stringify(product)], {type: 'application/json'}))
+    // formData.append('images', image)
+    var item = {
+        name:$('#name').val(),
+        quantity:parseInt($('#quantity').val()),
+        price:parseInt($('#price').val()),
+        detail:$('#detail').val(),
+    };
+    console.log(JSON.stringify(item));
     var data = new FormData();
-    data.append("files",$("#image")[0].files[0]);
+    data.append("file",$("#image")[0].files[0]);
+    // data.append("item",new Blob([JSON.stringify(item)],{type: "application/json"}));
+    data.append("name",$('#name').val());
+    data.append("quantity",parseInt($('#quantity').val()));
+    data.append("price",parseInt($('#price').val()));
+    data.append("detail",$('#detail').val());
+
     if(type ==="POST") {
         $.ajax({
             type: 'POST',
             enctype: 'multipart/form-data',
-            url: 'http://localhost:8080/api/items?name='+$("#name").val()+'&quantity='+$("#quantity").val()+'&price='+$("#price").val()+'&detail='+$("#detail").val(),
+            url: 'http://localhost:8080/api/items',
             data: data,
             contentType: false,
             processData: false,
@@ -126,7 +142,7 @@ function aaddItem(type){
             },
             error: function (error) {
                 console.log('errorCode: ' + error.status + ' . Message: ' + error.responseText);
-                alert(`Error: ${error.status}\n\nPlease fill in the *`);
+                alert(`Failed to add user: ${error.status}\n\nSome error occurred *`);
             }
         });
     }
@@ -134,7 +150,7 @@ function aaddItem(type){
         $.ajax({
             type: 'PUT',
             enctype: 'multipart/form-data',
-            url: 'http://localhost:8080/api/items/'+$("#id").val()+'?name='+$("#name").val()+'&quantity='+$("#quantity").val()+'&price='+$("#price").val()+'&detail='+$("#detail").val(),
+            url: 'http://localhost:8080/api/items/'+$("#id").val(),
             data: data,
             contentType: false,
             processData: false,
@@ -144,7 +160,7 @@ function aaddItem(type){
             },
             error: function (error) {
                 console.log('errorCode: ' + error.status + ' . Message: ' + error.responseText);
-                alert(`Error: ${error.status}\n\nPlease fill in the *`);
+                alert(`Error: ${error.status}\n\nSome error occurred`);
             }
         });
     }

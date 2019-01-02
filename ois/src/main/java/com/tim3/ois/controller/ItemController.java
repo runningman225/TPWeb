@@ -1,6 +1,7 @@
 package com.tim3.ois.controller;
 
 
+import com.tim3.ois.model.CreateNewItem;
 import com.tim3.ois.model.Item;
 import com.tim3.ois.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,30 +53,36 @@ public class ItemController {
 //        return true;
 //    }
 
-    @PostMapping("/items")
-    public ResponseEntity<?> createNewItem(
-            @RequestParam(value = "name") String name,
-            @RequestParam(value = "quantity") int quantity,
-            @RequestParam(value = "price") long price,
-            @RequestParam(value = "detail") String detail,
-            @RequestParam("files")MultipartFile files){
-        return itemService.storeItem(name,quantity,price,detail,files);
-    }
-    @PutMapping("/items/{id}")
-    public ResponseEntity<?> updateItem(
-            @PathVariable(value = "id") int itemId,
-            @RequestParam(value = "name") String name,
-            @RequestParam(value = "quantity") int quantity,
-            @RequestParam(value = "price") long price,
-            @RequestParam(value = "detail") String detail,
-            @RequestParam("files")MultipartFile files){
-        return itemService.updateItem(itemId,name,quantity,price,detail,files);
-    }
-//    @PutMapping("/items/{id}")
-//    public Item updateItem(@PathVariable(value = "id") int itemId,
-//                           @Valid @RequestBody Item itemNow) {
-//        return itemService.updateItem(itemId,itemNow);
+//    @PostMapping(value="/items", consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+//    public ResponseEntity<?> createNewItem(
+//            @RequestParam(value = "files")MultipartFile file,
+//            @RequestParam(value = "item") CreateNewItem item){
+//        return itemService.storeItem(file,item);
 //    }
+    @PostMapping(value="/items", consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    public ResponseEntity<?> createNewItem(
+            @ModelAttribute("createNewItem") CreateNewItem createNewItem){
+        return itemService.storeItem(createNewItem);
+    }
+
+    @PutMapping(value="/items/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    public ResponseEntity<?> updateItem(
+            @PathVariable(value = "id") int id,
+            @ModelAttribute("createNewItem") CreateNewItem createNewItem){
+        return itemService.updateItem(id,createNewItem);
+    }
+
+//    @PutMapping("/items/{id}")
+//    public ResponseEntity<?> updateItem(
+//            @PathVariable(value = "id") int itemId,
+//            @RequestParam(value = "name") String name,
+//            @RequestParam(value = "quantity") int quantity,
+//            @RequestParam(value = "price") long price,
+//            @RequestParam(value = "detail") String detail,
+//            @RequestParam("files")MultipartFile files){
+//        return itemService.updateItem(itemId,name,quantity,price,detail,files);
+//    }
+
     @PutMapping("/items/delete/{id}")
     public Boolean deleteItem(@PathVariable(value = "id")int itemId){
         return itemService.deleteItem(itemId);

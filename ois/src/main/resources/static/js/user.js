@@ -2,7 +2,6 @@ function getMySuperior(){
     $("#title1").html('<b class="bold1">M</b>Y<b class="bold1">&nbsp;S</b>UPERIOR');
     $("#userList").empty();// Clear whatever content there was before
     $("th.action1, .sort").remove();
-
     $("#userList").append(
         $("<tr>").append(
             $("<td>").text(mySup.picture),
@@ -71,7 +70,6 @@ function agetAllUsersBySuperior(){
                 // Use jQuery methods to add the content and bind a click handler
                 $("#userList").append(
                     $("<tr>").append(
-                        $("<td>").text(user.picture),
                         $("<td>").text(user.id),
                         $("<td>").text(user.email),
                         $("<td>").text(user.nik),
@@ -108,7 +106,6 @@ function agetAllUsers(){
                     for (var i = 0; i < len; i++) {
                         if(data[i].superior!=null) {
                             txt += `<tr>\n 
-                                            <td>${data[i].picture}</td>\\n 
                                             <td id=${data[i].id}>${data[i].id}</td>\n 
                                             <td id=${data[i].email}>${data[i].email}</td>\n 
                                             <td style="width: 6%">${data[i].nik}</td>\n 
@@ -126,7 +123,6 @@ function agetAllUsers(){
                         }
                         else if(data[i].superior==null){
                             txt += `<tr>\n
-                                             <td>${data[i].picture}</td>\\n
                                             <td id=${data[i].id}>${data[i].id}</td>\n 
                                             <td id=${data[i].email}>${data[i].email}</td>\n 
                                             <td style="width: 6%">${data[i].nik}</td>\n
