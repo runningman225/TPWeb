@@ -4,7 +4,6 @@ function getMySuperior(){
     $("th.action1, .sort").remove();
     $("#userList").append(
         $("<tr>").append(
-            $("<td>").text(mySup.picture),
             $("<td>").text(mySup.id),
             $("<td>").text(mySup.email),
             $("<td>").text(mySup.nik),
@@ -104,40 +103,21 @@ function agetAllUsers(){
                 var txt = ``;
                 if (len > 0) {
                     for (var i = 0; i < len; i++) {
-                        if(data[i].superior!=null) {
                             txt += `<tr>\n 
                                             <td id=${data[i].id}>${data[i].id}</td>\n 
                                             <td id=${data[i].email}>${data[i].email}</td>\n 
-                                            <td style="width: 6%">${data[i].nik}</td>\n 
+                                            <td style="width: 6%">${data[i].nik != null ? data[i].nik : ""}</td>\n 
                                             <td>${data[i].name}</td>\n 
-                                            <td>${data[i].division}</td>\n 
-                                            <td>${data[i].position}</td>\n 
-                                            <td>${data[i].cnumber}</td>\n 
-                                            <td><div style="width:100%;word-break: break-all">${data[i].address}</div></td>\n 
-                                            <td>${data[i].superior.name}</td>\n 
+                                            <td>${data[i].division != null ? data[i].division : ""}</td>\n 
+                                            <td>${data[i].position != null ? data[i].position : ""}</td>\n 
+                                            <td>${data[i].cnumber  != null ? data[i].cnumber : ""}</td>\n 
+                                            <td><div style="width:100%;word-break: break-all">${data[i].address != null ? data[i].address : ""}</div></td>\n 
+                                            <td>${data[i].superior != null ? data[i].superior.name : "" }</td>\n 
                                             <td align="center"  class="action1">\n 
                                             <button onclick="editUser(${data[i].id})" class="btn btn-warning">Edit&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                             <button onclick="deleteUser(${data[i].id},'${data[i].email}')" class="btn btn-danger">Delete</button></>\n 
                                             </td>\n
                                             </tr>`;
-                        }
-                        else if(data[i].superior==null){
-                            txt += `<tr>\n
-                                            <td id=${data[i].id}>${data[i].id}</td>\n 
-                                            <td id=${data[i].email}>${data[i].email}</td>\n 
-                                            <td style="width: 6%">${data[i].nik}</td>\n
-                                            <td>${data[i].name}</td>\n
-                                            <td>${data[i].division}</td>\n
-                                            <td>${data[i].position}</td>\n
-                                            <td>${data[i].cnumber}</td>\n
-                                            <td><div style="width:100%;word-break: break-all">${data[i].address}</div></td>\n 
-                                            <td></td>\n
-                                            <td align="center"  class="action1">\n
-                                            <button onclick="editUser(${data[i].id})" class="btn btn-warning">Edit&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                                            <button onclick="deleteUser(${data[i].id},'${data[i].email}')" class="btn btn-danger">Delete</button>\n
-                                            </td>\n
-                                            </tr>`;
-                        }
                     }
                     if(txt){
                         $("#userList").html(txt);

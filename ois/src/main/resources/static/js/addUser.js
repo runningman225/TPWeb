@@ -108,13 +108,12 @@ function addUser() {
     '               </div>' +
         '       </div>' +
         '       <div class="col-md-9" >' +
-        '       <div class="col-md-3"></div>' +
-        '       <div class="col-md-6" style="margin-top: 7%;">' +
-                '    <button id="saveUser" type="submit" class="btn btn-success">SUBMIT</button>' +
-                '    <button id="reset" type="reset" class="btn btn-warning">RESET</button>' +
-                '    <button class="btn btn-primary" onclick="window.location.href=\'index\'">BACK</button>' +
-            '    </div>' +
-            '    <div class="col-md-3"></div>' +
+            '       <div class="col-md-3"></div>' +
+            '       <div class="col-md-6" style="margin-top: 7%;">' +
+                    '    <button id="saveUser" type="submit" class="btn btn-success">SUBMIT</button>' +
+                    '    <button id="reset" type="reset" class="btn btn-warning">RESET</button>' +
+                    '    <button class="btn btn-primary" onclick="window.location.href=\'index\'">BACK</button>' +
+                '    </div>' +
             '    </div>' +
         '   </form>'
 }
