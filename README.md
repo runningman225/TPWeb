@@ -1,4 +1,4 @@
-# TPWeb
+# Tugas Projek Web Dasar
 Tugas projek pemrograman web dasar, membuat sistem inventaris berbasis web untuk memudahkan proses peminjaman barang.
 Teknologi yang digunakan:
   - Javascript, JQuery, HTML & CSS, Bootstrap, Springboot
