@@ -2,6 +2,7 @@
 Tugas projek pemrograman web dasar, membuat sistem inventaris berbasis web untuk memudahkan proses peminjaman barang.
 Teknologi yang digunakan:
   - Javascript, JQuery, HTML & CSS, Bootstrap, Springboot
+  
 Anggota:
   1. Andre Harsono  161110277
   2. Anthony        161110439
