@@ -56,6 +56,7 @@ public class RequestService {
                 new Sort(Sort.Direction.DESC, "createdAt"));
     }
 
+
     public Page<Request> findAll(int eId, int sId, int page, int size) {
         if (sId != -1) return requestRepository.findAllBySuperiorPageable(sId, true, createPageRequest(page, size));
 
@@ -76,7 +77,9 @@ public class RequestService {
 
     public RequestCount getMyRequestCount(Integer userId)  throws ResourceNotFoundException{
         User userExist = userService.findUserById(userId);
-        if(userExist==null) throw new ResourceNotFoundException("User","id",userId);
+        if (userExist==null) {
+            throw new ResourceNotFoundException("User","id",userId);
+        }
         RequestCount myReqCount = new RequestCount();
         myReqCount.setRejected(requestRepository.getMyRequestRejectedCount(true,userId));
         myReqCount.setApproved(requestRepository.getMyRequestApprovedCount(true,userId));
